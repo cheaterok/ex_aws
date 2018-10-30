@@ -22,6 +22,9 @@ defmodule ExAws.Request.Hackney do
         {:ok, %{status_code: status, headers: headers}}
       {:ok, status, headers, body} ->
         {:ok, %{status_code: status, headers: headers, body: body}}
+      {:error, :checkout_timeout = reason} ->
+        :hackney_pool.stop_pool(:default)
+        {:error, %{reason: reason}}
       {:error, reason} ->
         {:error, %{reason: reason}}
     end
