@@ -128,6 +128,14 @@ defmodule ExAws.Request do
     {:retry, {type, message}}
   end
 
+  def handle_aws_error("TransactionCanceledException" = type, message) do
+    if String.contains?(message, "TransactionConflict") do
+      {:retry, {type, message}}
+    else
+      {:error, {type, message}}
+    end
+  end
+
   def handle_aws_error(type, message) do
     {:error, {type, message}}
   end
