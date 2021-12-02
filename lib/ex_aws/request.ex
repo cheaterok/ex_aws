@@ -155,6 +155,10 @@ defmodule ExAws.Request do
     end
   end
 
+  def handle_aws_error("TransactionConflictException" = type, message, _) do
+    {:retry, {type, message}}
+  end
+
   def handle_aws_error(type, message, %{"expectedSequenceToken" => expected_sequence_token}) do
     {:error, {type, message, expected_sequence_token}}
   end
